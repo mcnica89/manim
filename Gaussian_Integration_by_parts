@@ -1,0 +1,186 @@
+%%manim  -ql -v CRITICAL gaussian_moments
+
+#IMPORTANT: -ql = low quality. Remove flag before export!
+
+EQN_SIZE = 70
+K_COLOR = RED
+X_COLOR = BLUE
+TEXT_COLOR = GRAY
+DELAY = 0.1
+SKIP_MODE = True #mode to speed up animatins
+
+def MathTexAndColor(tex):
+        eqn = MathTex(tex,  font_size = EQN_SIZE)
+        eqn.set_color_by_tex("k", K_COLOR)
+        eqn.set_color_by_tex("x", X_COLOR)
+        return eqn
+    
+def set_new_location(A,B):
+    A.set_x(B.get_x())
+    A.set_y(B.get_y())
+    
+def color_and_move_this_eqn(eqn_name,eqn_target):
+    eqn_name.set_color_by_tex("k", K_COLOR)
+    eqn_name.set_color_by_tex("x", X_COLOR)
+    eqn_name.next_to(eqn_target,DOWN*8)
+    eqn_name.align_to(eqn_target,LEFT)
+
+class gaussian_moments(Scene):
+    
+    def skip_create(self,*args):
+        if SKIP_MODE == False:
+            self.create(*args)
+            self.wait(DELAY)
+        else:
+            self.add(*args)
+    
+    def construct(self):
+        
+        #setup the equation but in parts so we can manipualte it
+        eqn_start = MathTex(r"\mathbb{E}[Z^{{k}}]",r"=", r"\frac{1}{\sqrt{2\pi}}", r" \intop_{-\infty}^{\infty}", font_size=EQN_SIZE)
+        eqn_start.set_color_by_tex("k", K_COLOR)
+        #for i in range(len(eqn_start)):
+        #    if i%2 == 0:
+        #        eqn_start[i].color = GRAY
+        #self.add(eqn_start)
+        #return 0
+        
+        eqn_midA = MathTexAndColor(r" {{x}}^{{k}} \Bigr) ")
+        eqn_midA[-1].color = BLACK #make the bracket black
+        eqn_midB = MathTexAndColor(r" e^{-\frac{1}{2}{{x}}^2}} {{\Bigr)}}")
+        eqn_midB[-1].color = BLACK #make the bracket black
+        eqn_end = MathTexAndColor(r"d {{x}}")
+        
+        eqn = VGroup(eqn_start,eqn_midA,eqn_midB,eqn_end).arrange(RIGHT)
+        eqn.shift(2.25*UP+LEFT)
+        
+        
+        #Now make a copy of the equation, but spaced so there is enough room to covert x^k into x^{k-1} x
+        eqn_midA_final = MathTexAndColor(r" {{x}}^{ {{k}} - 1 } {{\Bigl(}} {{x}}  ")
+        eqn_midA_final[5].color = BLACK #make the bracket black
+        
+        #arrange eqn using x^{k-1}x
+        eqn_w_space = VGroup(eqn_start.copy(),eqn_midA_final,eqn_midB.copy(),eqn_end.copy()).arrange(RIGHT)
+        eqn_w_space.align_to(eqn,UP)
+        eqn_w_space.align_to(eqn,LEFT)
+        
+        
+        #replace x^{k-1}x by x^k (so everything else will be spaced correctly)
+        eqn_midA_space = eqn_midA.copy() 
+        set_new_location(eqn_midA_space,eqn_midA_final) 
+        eqn_w_space[1] = eqn_midA_space
+        
+        #eqn2.set_color_by_tex("k", K_COLOR)
+        #eqn2.set_color_by_tex("x", X_COLOR)
+        
+        
+        #Animate the equation in in an order so voice over explanation can be added
+        
+        if SKIP_MODE == False: 
+            for parts in [ [eqn_start[0:4]],[eqn_start[5],eqn_end],[eqn_start[4],eqn_midB],[eqn_midA]]:
+                self.play(FadeIn(*parts))
+                self.wait(DELAY)
+        else:
+            self.add(eqn)
+            
+        if SKIP_MODE == False:
+            int_by_parts_q = Text("Integration by parts?")
+            int_by_parts_q.color = TEXT_COLOR
+            int_by_parts_q.next_to(eqn_midA,UP)
+            int_by_parts_q.align_to(eqn_midA,LEFT)
+            self.play(Create(int_by_parts_q))
+            self.wait(DELAY)
+            self.play(FadeOut(int_by_parts_q))
+            self.wait(DELAY)
+            
+            
+            
+        self.play(ReplacementTransform(eqn,eqn_w_space))
+        self.play(TransformMatchingTex(eqn_midA_space,eqn_midA_final))
+        self.wait(DELAY)
+        self.play(FadeToColor(eqn_midB[-1], color=WHITE),FadeToColor(eqn_midA_final[5], color=WHITE))
+        self.wait(DELAY)
+        
+        int_by_parts = Text("Integration by parts!")
+        int_by_parts.color = TEXT_COLOR
+        int_by_parts.next_to(eqn_midA_final,UP)
+        int_by_parts.align_to(eqn_midA_final,LEFT)
+        self.skip_create(int_by_parts)
+        
+        
+        back_brace = BraceLabel(VGroup(eqn_midA_final[-4:-1],eqn_midB),r"\text{Do }\int")
+        back_brace.color = TEXT_COLOR
+        self.skip_create(back_brace)
+        
+        front_brace = BraceLabel(eqn_midA_final[0:5],r"\text{Do }\frac{d}{dx}")
+        front_brace.align_to(back_brace,UP)
+        front_brace.color = TEXT_COLOR
+        self.skip_create(front_brace)
+        
+        eqn_ibp = MathTex(r"=", r"\frac{-1}{\sqrt{2\pi}}", r" \intop_{-\infty}^{\infty}", r"({{k}}-1){{x}}^{{{k}}-2}",r"\bigl(-e^{-\frac{1}{2}{{x}}^2}}\bigr)",r"d{{x}}", font_size=EQN_SIZE)
+        
+        
+        eqn_ibp_no_minus = MathTex(r"=", r"\frac{1}{\sqrt{2\pi}}", r"\intop_{-\infty}^{\infty}", r"({{k}}-1){{x}}^{{{k}}-2}",r"\bigl(e^{-\frac{1}{2}{{x}}^2}}\bigr)",r"d{{x}}", font_size=EQN_SIZE)
+        
+        
+        eqn_ibp_k = MathTex(r"=", r"({{k}}-1)", r"\frac{1}{\sqrt{2\pi}}", r"\intop_{-\infty}^{\infty}", r"{{x}}^{{{k}}-2}",r"\bigl(e^{-\frac{1}{2}{{x}}^2}}\bigr)",r"d{{x}}", font_size=EQN_SIZE)
+        
+        #line up to the equals sign from the first eqn
+        color_and_move_this_eqn(eqn_ibp,eqn_start[3])
+        color_and_move_this_eqn(eqn_ibp_no_minus,eqn_start[3])
+        color_and_move_this_eqn(eqn_ibp_k,eqn_start[3])
+        
+        
+        
+        
+        #print("eqn_midA_final")
+        #for e,i in enumerate(eqn_midA_final):
+        #    print(e,i)
+            
+        #print("eqn_midB")
+        #for e,i in enumerate(eqn_midB):
+        #    print(e,i)
+            
+        print("eqn_ibp_k")
+        for e,i in enumerate(eqn_ibp_k):
+            print(e,i)
+            
+        print("eqn_ibp_no_minus")
+        for e,i in enumerate(eqn_ibp_no_minus):
+            print(e,i)
+            
+        
+        #move over integral and 1/sqrt{2pi}
+        pairs_list = [ [eqn_start[3],eqn_ibp[0]],[eqn_start[4],eqn_ibp[1]],[eqn_start[5],eqn_ibp[2]],[eqn_end,eqn_ibp[-2:]] ] 
+        self.play(*[TransformFromCopy(a,b) for a,b in pairs_list])
+        
+        #do the derivative
+        pairs_list = [ [eqn_midA_final[0:-4], eqn_ibp[3:10]] ]
+        self.play(*[TransformFromCopy(a,b) for a,b in pairs_list], Indicate(front_brace))
+        self.play(FadeOut(front_brace))
+        self.wait(DELAY)
+       
+        
+        #do the integral
+        pairs_list = [ [eqn_midA_final[5:], eqn_ibp[10]],[eqn_midB, eqn_ibp[11:13]] ]
+        self.play(*[TransformFromCopy(a,b) for a,b in pairs_list], Indicate(back_brace))
+        self.play(FadeOut(back_brace),FadeOut(int_by_parts))
+        self.wait(DELAY)
+       
+        
+       
+        
+        #eqn_ibp_2MathTex(r"=", r"\frac{1}{\sqrt{2\pi}}", r" \intop_{-\infty}^{\infty}", r"({{k}}-1){{x}}^{{{k}}-2}",r"\bigl( e^{-\frac{1}{2}{{x}}^2}} \bigr)",r"d {{x}}", font_size=EQN_SIZE)
+        
+        
+        self.play(ReplacementTransform(eqn_ibp,eqn_ibp_no_minus))
+        self.wait(DELAY)
+        
+        self.play(TransformMatchingTex(eqn_ibp_no_minus,eqn_ibp_k))
+        
+        
+        
+        
+        
+        
+        self.wait(2)
