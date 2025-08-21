@@ -49,7 +49,7 @@ import os
 os.environ["PATH"] = "/Library/TeX/texbin:" + os.environ["PATH"]
 
 # %%
-import jax
+# import jax
 
 # %%
 ## Global Variables and Stuff ##
@@ -183,7 +183,7 @@ FINAL_MOBJECTS_2 = None
 #%%manim_slides -ql -v WARNING Spider --manim-slides controls=false
 # Choose to do regular manim or manim-slides by choosing the correct jupyter magic. Must be first line.
 
-class Spider(Slide):  # Scene): # change to MyScene(Slide) for manim-slides
+class Spider2(Slide):  # Scene): # change to MyScene(Slide) for manim-slides
     def pause(self):
         self.wait(DELAY)
         self.next_slide() #comment in for manim-slides
@@ -409,16 +409,20 @@ class Spider(Slide):  # Scene): # change to MyScene(Slide) for manim-slides
                 
             spider.target.move_to(dots[spider_pos_post])
             anim_group = [MoveToTarget(spider)]
-            if t==2:
+            if t==0:
                 anim_group.append(LaggedStart(FadeOut(line1,shift=RIGHT),Write(line2),lag_ratio=0.5))
+                self.play(anim_group)
+                self.pause()
+                
                 #anim_group.append()
 
         
 
-            if t==5:
+            elif t==5:
                 
                 anim_group.append(LaggedStart( FadeOut(comment,shift=DOWN), Write(E_hint), Write(E_eqn[:-1]), Write(Q_mark), lag_ratio=0.5))
-                
+                self.play(anim_group)
+                self.pause()
                 #anim_group.append(FadeIn(probs_list2))
                 #
             #if t==6:
@@ -429,8 +433,8 @@ class Spider(Slide):  # Scene): # change to MyScene(Slide) for manim-slides
 
                 #anim_group.append(ReplacementTransform(probs_list2.copy(), VGroup(E_eqn, Q_mark, E_hint)))
                 #anim_group.append()
-
-            self.play(anim_group)
+            else:
+                self.play(anim_group)
             
 
             spider_pos = spider_pos_post
@@ -476,14 +480,18 @@ brace_buff = 0.3
 
 FINAL_MOBJECTS_SPIDER = None
 
-class Unfold(Slide): #cene): # change to MyScene(Slide) for manim-slides
+class Unfold2(Slide): #cene): # change to MyScene(Slide) for manim-slides
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.skip_reversing = True
     def pause(self):
         self.wait(DELAY)
         self.next_slide() #comment in for manim-slides
         self.wait(DELAY)
     def construct(self):
     
-        self.next_section() #skip_animations=True) #comment out for manim-slides
+        #self.next_section() #skip_animations=True) #comment out for manim-slides
         #self.pause()
         
         ###
@@ -616,7 +624,7 @@ class Unfold(Slide): #cene): # change to MyScene(Slide) for manim-slides
         #f_eqn.to_edge(LEFT)
 
 
-        self.next_section()
+        #self.next_section()
 
 
         self.play(Write(f_eqn[:-2]))
@@ -644,14 +652,14 @@ class Unfold(Slide): #cene): # change to MyScene(Slide) for manim-slides
         self.play(ReplacementTransform(vs[-1].copy(),f_k))
         self.pause()
 
-        self.play(FadeOut(vs,spider,f_def,f_def2,edges,ubrace,x))
+        self.play(FadeOut(vs,spider,edges,ubrace,x))
         self.pause()
 
-        global FINAL_MOBJECTS_3
-        FINAL_MOBJECTS_3 = f_eqn, f_0, f_k, k_is, f_def, f_def2
+        #global FINAL_MOBJECTS_3
+        #FINAL_MOBJECTS_3 = f_eqn, f_0, f_k, k_is, f_def, f_def2
 
-        global FINAL_MOBJECTS_SPIDER
-        FINAL_MOBJECTS_SPIDER = spider, vs, edges, ubrace, x
+        #global FINAL_MOBJECTS_SPIDER
+        #FINAL_MOBJECTS_SPIDER = spider, vs, edges, ubrace, x
 
         
 
@@ -663,20 +671,20 @@ class Unfold(Slide): #cene): # change to MyScene(Slide) for manim-slides
 # Choose to do regular manim or manim-slides by choosing the correct jupyter magic. Must be first line.
 
 
-class DiffEqnF(Slide): #cene): # change to MyScene(Slide) for manim-slides
-    def pause(self):
-        self.wait(DELAY)
-        self.next_slide() #comment in for manim-slides
-        self.wait(DELAY)
-    def construct(self):
+#class DiffEqn2(Slide): #cene): # change to MyScene(Slide) for manim-slides
+    #def pause(self):
+    #    self.wait(DELAY)
+    #    self.next_slide() #comment in for manim-slides
+    #    self.wait(DELAY)
+    #def construct(self):
     
-        self.next_section() #skip_animations=True) #comment out for manim-slides
+        #self.next_section() #skip_animations=True) #comment out for manim-slides
         #self.pause()
         
         ###
         #self.next_section() #comment out for manim-slied
-        f_eqn, f_0, f_k, k_is, f_def, f_def2 = [mob.copy() for mob in FINAL_MOBJECTS_3]
-        self.add(f_eqn, f_0, f_k, k_is, f_def, f_def2)
+        #f_eqn, f_0, f_k, k_is, f_def, f_def2 = [mob.copy() for mob in FINAL_MOBJECTS_3]
+        #self.add(f_eqn, f_0, f_k, k_is, f_def, f_def2)
 
         comma = MathTex(r",", tex_to_color_map=t2cD, font_size=60)
         
@@ -938,7 +946,7 @@ class DiffEqnF(Slide): #cene): # change to MyScene(Slide) for manim-slides
         self.pause()
 
         self.play(ReplacementTransform(factored.copy(),check2))
-        check3 = MathTex(r"\checkmark", color=GREEN, font_size=1.2*x_font_size)
+        check3 = MathTex(r"\checkmark", color=GREEN, font_size=1.2*x_font_size) 
         check3.next_to(f_k,RIGHT,buff=0.1)
         check3.shift(0.15*UP)
         self.play(ReplacementTransform(factored.copy(),check3),FadeOut(x_mark))
@@ -949,7 +957,7 @@ class DiffEqnF(Slide): #cene): # change to MyScene(Slide) for manim-slides
         self.play(FadeIn(check4,shift=RIGHT))
         self.pause()
 
-        spider, vs, edges, ubrace, x = [mob.copy() for mob in FINAL_MOBJECTS_SPIDER]
+        #spider, vs, edges, ubrace, x = [mob.copy() for mob in FINAL_MOBJECTS_SPIDER]
         mobs = [spider, vs, edges, ubrace, x]
         fade_up_mobs = VGroup(f_eqn_post,f_0,f_k,check,check2,check3,comma, ICs, eqn_label)
         fade_out_mobs = VGroup(f_eqn_plugD, *crosses, *crosses2, *crosses3, *crosses4, kx_line)
@@ -965,7 +973,7 @@ class DiffEqnF(Slide): #cene): # change to MyScene(Slide) for manim-slides
         self.play(GrowFromCenter(ubrace2),FadeIn(k_minus_x,shift=DOWN))
         self.pause()
 
-        self.next_section()
+        #self.next_section()
 
         xx_font_size = 1.2*x_font_size
         final_LHS = MathTex(r"\mathbb{E}\big[ T \big]", r"= ", tex_to_color_map=t2cD, font_size=xx_font_size)
@@ -1016,671 +1024,18 @@ class DiffEqnF(Slide): #cene): # change to MyScene(Slide) for manim-slides
         self.pause()
 
 
-# %%
-#%%manim -ql -v WARNING Parab
 
-class Parab(Scene):
+class Dummy(Slide): #cene): # change to MyScene(Slide) for manim-slides
     def pause(self):
         self.wait(DELAY)
-        #self.next_slide() #comment in for manim-slides
-
-    def construct(self):
-        
-        #### Parabola animating 
-        # Axes setup
-        axes = Axes(
-            x_range=[0.5, 4.0, 1],
-            y_range=[-5, 1, 1],
-            x_length=7,
-            y_length=4,
-            axis_config={"include_numbers": True}
-        )
-        #self.add(axes)
-
-        # Function: f(x) = -(x - 2)^2
-        parabola = axes.plot(lambda x: -(x - 2)**2, color=BLUE)
-        self.play(Create(parabola))
-
-        dot_color = YELLOW
-
-        # Highlight point at x = 2
-        x_tracker = ValueTracker(2.25)
-        x0 = x_tracker.get_value()
-        f = lambda x : -(x - 2)**2  # = 0
-        dot = always_redraw(lambda: 
-            Dot(axes.c2p(x_tracker.get_value(), f(x_tracker.get_value())), color=dot_color)
-        )
-        #dot_center = Dot(axes.c2p(x0, y0), color=YELLOW)
-        #label_center = MathTex("f(x )").next_to(dot_center, UP)
-        label = always_redraw(lambda: 
-            MathTex(f"f(x)").next_to(dot, UP)
-        )
-        self.play(FadeIn(dot), Write(label))
-
-        
-        # Draw chord from x=1 to x=3
-        
-
-        dot_1 = always_redraw(lambda: 
-            Dot(axes.c2p(x_tracker.get_value()-1, f(x_tracker.get_value()-1)), color=dot_color)
-        )
-        label_1 = always_redraw(lambda: 
-            MathTex(f"f(x-1)").next_to(dot_1, LEFT)
-        )
-        dot_2 = always_redraw(lambda: 
-            Dot(axes.c2p(x_tracker.get_value()+1, f(x_tracker.get_value()+1)), color=dot_color)
-        )
-        label_2 = always_redraw(lambda: 
-            MathTex(f"f(x+1)").next_to(dot_2, RIGHT)
-        )
-
-        self.play(FadeIn(dot_1,dot_2),Write(label_1),Write(label_2))
-        self.pause()
-
-        chord = always_redraw(lambda: Line(dot_1.get_center(), dot_2.get_center(), color=ORANGE))
-        self.play(Create(chord))
-
-
-
-        def create_dot_mid():
-            x1, x2 = x_tracker.get_value() - 1, x_tracker.get_value() + 1
-            y1 = -(x1 - 2)**2
-            y2 = -(x2 - 2)**2
-            p1 = axes.c2p(x1, y1)
-            p2 = axes.c2p(x2, y2)
-            # Midpoint of the chord
-            xm = (x1 + x2) / 2  # Should be 2
-            ym = (y1 + y2) / 2  # Average of y1 and y2
-            return Dot(axes.c2p(xm, ym), color=RED)
-
-        dot_mid = always_redraw(create_dot_mid)
-        label_mid = always_redraw(lambda: MathTex(r"{1 \over 2}f(x -1) + {1 \over 2}f(x +1)").scale(0.7).next_to(dot_mid, DOWN))
-
-        self.play(FadeIn(dot_mid), Write(label_mid))
-        self.pause()
-
-
-        # Show comparison with f(2)
-        brace = always_redraw(lambda: BraceBetweenPoints(dot.get_center(), dot_mid.get_center(), direction=LEFT, color=GREEN))
-        #comparison = always_redraw(lambda:MathTex(r"\text{Difference}").next_to(brace, LEFT))
-        self.play(GrowFromCenter(brace)) #, Write(comparison))
-        self.pause()
-
-
-        self.play(x_tracker.animate.set_value(3.0))
-        self.play(x_tracker.animate.set_value(1.5))
-        self.play(x_tracker.animate.set_value(2.25))
-        self.pause()
-
-
-        self.wait()
-
-
-# %%
-def mob_arrow(start_mob: Mobject, end_mob: Mobject, **kwargs) -> Arrow:
-    """
-    Create an arrow from the right edge of start_mob to the left edge of end_mob.
-
-    Additional Arrow arguments can be passed via kwargs.
-    """
-    return Arrow(
-        start=start_mob.get_edge_center(RIGHT),
-        end=end_mob.get_edge_center(LEFT),
-        color = GREY_C,
-        stroke_width=1.5,
-        tip_length = 0.15,
-        **kwargs
-    )
-
-
-def background_box(width=5, height=None, font_size=24, box_opacity=0.8):
-    """
-    Create a paragraph inside a black background box.
-
-    Args:
-        text (str): The text content.
-        width (float): Width of the box.
-        height (float or None): Height of the box. If None, adjusts automatically.
-        font_size (int): Size of the text.
-        box_opacity (float): Opacity of the black background.
-
-    Returns:
-        VGroup: A group containing the background box and the text.
-    """
-    # Create the paragraph
-    #paragraph = Paragraph(text, alignment="center", font_size=font_size)
-    #paragraph.width = width
-
-    # Optional: shrink text to fit if it gets too wide
-    #if paragraph.width > width:
-    #    paragraph.scale_to_fit_width(width)
-
-    # Create a background box
-    rect_height = height if height else paragraph.height + 0.5
-    background = Rectangle(
-        width=width + 0.5,  # padding
-        height=rect_height,
-        fill_color=BLACK,
-        fill_opacity=box_opacity,
-        stroke_color=WHITE,
-        stroke_width=1
-    )
-
-    # Layer: background behind paragraph
-    #group = VGroup(background, paragraph)
-    #group.arrange(DOWN, center=True, aligned_edge=UP)
-
-    return background
-
-
-# %%
-
-
-# %%
-#%%manim -ql -v WARNING House
-# %%manim_slides -ql -v WARNING MyScene --manim-slides controls=true
-# Choose to do regular manim or manim-slides by choosing the correct jupyter magic. Must be first line.
-
-class House(Scene): # change to MyScene(Slide) for manim-slides
-    def pause(self):
+        self.next_slide() #comment in for manim-slides
         self.wait(DELAY)
-        #self.next_slide() #comment in for manim-slides
     def construct(self):
-        #self.next_section(skip_animations=True) #comment out for manim-slides
-        #self.pause()
-        
-        # Base Rectangle
-        base = Polygon(
-            [0, 0, 0],  # Bottom-left
-            [6, 0, 0],  # Bottom-right
-            [6, 4, 0],  # Top-right
-            [0, 4, 0],  # Top-left
-            color=BLUE
-        )
-
-        # Door Rectangle
-        door = Polygon(
-            [2.2, 0, 0],  # Bottom-left
-            [3.8, 0, 0],  # Bottom-right
-            [3.8, 2.8, 0],  # Top-right
-            [2.2, 2.8, 0],  # Top-left
-            color=GREEN
-        )
-
-        # Roof Triangle
-        roof = Polygon(
-            [-0.5, 4, 0],  # Leftmost corner
-            [6.5, 4, 0],   # Rightmost corner
-            [3, 7, 0],     # Apex
-            color=RED
-        )
-
-        # Add shapes to the scene
-        house = VGroup(base,door,roof)
-        
-        def my_house(x=0,y=0,scale=0.5):
-            new_house = Polygon([0, 0, 0],  # Bottom-left base
-                                [2.2, 0, 0],  # Bottom-left door
-                                [2.2, 2.8, 0],  # Top-left door
-                                [3.8, 2.8, 0],  # Top-right door
-                                [3.8, 0, 0],  # Bottom-right door
-                                [6, 0, 0],  # Bottom-right base
-                                [6, 4, 0],  # Top-right base
-                                [6.5, 4, 0],   # Rightmost corner roof
-                                [3, 7, 0],     # Apex roof
-                                [-0.5, 4, 0],  # Leftmost corner roof
-                                [0, 4, 0],  # Top-left base
-                               color=WHITE, fill_color=WHITE, fill_opacity=0.5)
-            new_house.set_x(x)
-            new_house.set_y(y)
-            new_house.scale(scale)
-            return new_house
-        
-        house.move_to([0,0,0])
-        new_house.move_to([0,0,0])
-        self.add(new_house)
-
-        
-
-# %%
-
-
-# %%
-#%%manim -ql -v WARNING Unfold_OLD
-# %%manim_slides -ql -v WARNING MyScene --manim-slides controls=true
-# Choose to do regular manim or manim-slides by choosing the correct jupyter magic. Must be first line.
-
-class Unfold_OLD(Scene): # change to MyScene(Slide) for manim-slides
-    def pause(self):
-        self.wait(DELAY)
-        #self.next_slide() #comment in for manim-slides
-    def construct(self):
-    
-        self.next_section() #skip_animations=True) #comment out for manim-slides
-        #self.pause()
-        
-        ###
-        #self.next_section() #comment out for manim-slied
-        spider, edges, vs, k_is = [mob.copy() for mob in FINAL_MOBJECTS]
-        spider_pos = FINAL_MOBJECTS_2
-        #for i in range(5):
-        #    self.play(Create(vs[i]))
-        #    self.play(Create(edges[i]))
-        #self.play(FadeOut(vs[0]))
-        #self.play(Create(vs[5]))    
-        #return 0
-        self.add(spider, edges, vs, k_is)
-        
-        spacing = vs[3].get_x() - vs[2].get_x() #distance between dots
-        
-        new_y = vs[0].get_y()
-        
-        unfolded_vs = VGroup(*[vertex.copy() for vertex in vs] )
-        for i in range(5+1):
-            unfolded_vs[i].set_x(spacing*(i-2) + vs[2].get_x())
-            unfolded_vs[i].set_y(new_y)
-        
-        #unfolded_edges = VGroup(*[Line([spacing*(i-2) + vs[2].get_x(),new_y,0],
-        #                               [spacing*(i-1) + vs[2].get_x(),new_y,0],
-        #                                color=edge_color) for i in range(5)])
-        
-        #self.add(unfolded_edges)
-        
-        #dumb way to do it because im getting frustrated looking up how to make the partial plug ins work correctly
-        def update_line_0(mob):
-            mob.put_start_and_end_on(vs[0].get_center(),vs[1].get_center())
-        def update_line_1(mob):
-            mob.put_start_and_end_on(vs[1].get_center(),vs[2].get_center())
-        def update_line_2(mob):
-            mob.put_start_and_end_on(vs[2].get_center(),vs[3].get_center())
-        def update_line_3(mob):
-            mob.put_start_and_end_on(vs[3].get_center(),vs[4].get_center())
-        def update_line_4(mob):
-            mob.put_start_and_end_on(vs[4].get_center(),vs[5].get_center())
-        def update_to_spider_pos(mob):
-            mob.move_to(vs[spider_pos])
-            
-        edges[0].add_updater(update_line_0)
-        edges[1].add_updater(update_line_1)
-        edges[2].add_updater(update_line_2)
-        edges[3].add_updater(update_line_3)
-        edges[4].add_updater(update_line_4)
-        spider.add_updater(update_to_spider_pos)
-        
-        for i in range(5+1):
-            vs[i].generate_target()
-            vs[i].target = unfolded_vs[i]
-        
-        #spider.generate_target()
-        #spider.target.move_to(unfolded_vs[spider_pos])
-        
-        #self.play(vs[0].animate.shift(LEFT))
-        
-        arc_angles = [90*DEGREES,72*DEGREES,0*DEGREES,-0*DEGREES,-72*DEGREES,-90*DEGREES]
-        self.play(*[MoveToTarget(vs[i],path_arc=arc_angles[i]) for i in range(5+1)])
-        self.pause()
-
-        #spider_pos = 0
-        spider_pos_post = 0
-        for t in range(8):
-            choice = np.random.choice([-1,+1])
-            if spider_pos == 5:
-                choice = -1
-            if spider_pos == 0:
-                choice = 1
-            #left_step = ( spider_pos - 1 ) % 5
-            #right_step = ( spider_pos + 1 ) % 5
-            #spider_pos_post = np.random.choice([left_step,right_step])
-            #while spider_pos_post == 0:
-            #    spider_pos_post = ( spider_pos + np.random.choice([-1,1]) ) % 5
-            
-            
-            
-            print(spider_pos_post)
-            
-            look_length = 1.0
-            look_num = 2
-            for spider_target in [-1,+1]*look_num:
-                spider_pos_post = ( spider_pos + choice*spider_target ) % 6
-                spider.generate_target()
-                spider.target = my_spider(eye_angle = get_angle(vs[spider_pos],vs[spider_pos_post]))
-
-                spider.target.move_to(vs[spider_pos]) #move just the eyes!
-                self.play(MoveToTarget(spider),run_time=look_length/(2.0*look_num))
-                
-            spider_pos_post = ( spider_pos + choice ) % 6
-                
-            spider.target.move_to(vs[spider_pos_post])
-            anim_group = [MoveToTarget(spider)]
-            self.play(anim_group)
-
-            spider_pos = spider_pos_post
-
-        #return 0
-
-
-        #,
-        #         MoveToTarget(spider,path_arc=arc_angles[spider_pos]))
-        #self.play(
-        #          MoveToTarget(vs[1],path_arc=72*DEGREES), #,
-        #          MoveToTarget(vs[2]),
-        #          MoveToTarget(vs[3]),
-        #          MoveToTarget(vs[4],path_arc=-72*DEGREES),
-        #          MoveToTarget(vs[0],path_arc=90*DEGREES),
-        #          MoveToTarget(spider,path_arc=90*DEGREES),
-        #          MoveToTarget(vs[5],path_arc=-90*DEGREES),
-        #         )
-        
-        rotated_vs = VGroup(*[vertex.copy() for vertex in vs] )
-        delta_x = 1.1
-        delta_y = 0.9 #(2*frame_height2 - top_buff - bottom_buff) / 5
-        
-        frame_height2 = config.frame_height/2
-        frame_width2 = config.frame_width/2
-        #top_buff = delta_y/2.0 #0.5
-        #bottom_buff = 2.5 #distance from bottom
-        for i in range(5+1):
-            rotated_vs[i].set_y(frame_height2 - delta_y*(i+0.5))
-            rotated_vs[i].set_x(delta_x*(0.5) - frame_width2)
-        
-        my_scale = 0.65
-        for i in range(5+1):
-            vs[i].generate_target()
-            vs[i].target = rotated_vs[i]
-            vs[i].target.scale(my_scale)
-        
-
-
-        self.play(*[MoveToTarget(vs[i]) for i in range(5+1)],spider.animate.scale(my_scale))
-        self.pause()
-
-        spider.clear_updaters()
-        spider.generate_target()        
-        spider.target.move_to(rotated_vs[5])
-        self.play(MoveToTarget(spider,path_arc=-90*DEGREES))
-        self.pause()
-        
-
-
-
-
-        
-        gridline_color = GREY
-        x_final = -frame_width2 + delta_x*(9+1)
-        gridlines = VGroup(*[Line( [-frame_width2,frame_height2 - delta_y*(i+1),0],
-                                   [x_final,frame_height2 - delta_y*(i+1),0],
-                                  color=gridline_color, stroke_width=2) for i in range(6)])
-
-        #gridline_color = GREY
-        y_final = frame_height2 - delta_y*(5+1)
-        gridlines_x = VGroup(*[Line( [-frame_width2 + delta_x*(i+1), frame_height2 , 0],
-                                   [-frame_width2 + delta_x*(i+1), y_final , 0],
-                                  color=gridline_color, stroke_width=1) for i in range(9+1)])
-                          
-        
-        #print(delta_y)
-        
-        time_color = GREY 
-        time_fs = 50
-        max_t = 9
-        times = VGroup(*[MathTex(f"{t}",font_size=time_fs,color=time_color) for t in range(max_t+1)])
-        times.add(MathTex(r"n ",font_size=time_fs,tex_to_color_map=t2cD))
-        #times[-1][-1].color = BLACK #make the 1 invisible! r"\!+\!1",
-        times.add(MathTex(r"n \!+\!1",font_size=time_fs,tex_to_color_map=t2cD))
-        
-        
-        
-        for t in range(max_t+3):
-            times[t].next_to(gridlines[-1],DOWN)
-            times[t].set_x(delta_x*(t+0.5) - frame_width2)
-        last_x_shift = 0.5 #amount to shift over the very last dude.
-        times[-1].shift(last_x_shift*RIGHT)
-        
-        times[-1].align_to(times[0],DOWN) #reset the height of this 
-        
-        times[-2].align_to(times[-1][0],DOWN) #alignt the "n"s
-        
-        time_label = MathTex(r"n \text{ steps}",font_size=time_fs,color=time_color,tex_to_color_map=t2cD)
-        
-        time_label.next_to(gridlines[-1],DOWN)
-        time_label.to_edge(RIGHT)
-        
-        self.play(Create(gridlines))
-        self.play(Create(gridlines_x))
-        self.pause()
-        
-        self.play(Write(time_label))
-        self.play(Create(times[1:max_t+1])) #[1:max_t+1]))
-        self.pause()
-
-
-        N_ways = VGroup(MathTex(r"\# \text{ of ways to }"), MathTex(r"\text{get to square}")).arrange(DOWN)
-        N_ways.to_corner(UR,buff=0.25)
-        #N_ways.next_to(vs[0],RIGHT, buff = 0.7)
-        self.play(Write(N_ways))
-        self.pause()
-
-
-        
-        #self.next_section()
-        
-        
-        
-        
-        grid_nums = [[None for y in range(5+1)] for t in range(max_t+2+1)]
-        
-        my_nums = [[1,1,1], #format: t,y, value
-                   [2,0,1],
-                   [2,2,1],
-                   [3,1,1],
-                   [3,3,1],
-                   [4,0,1],
-                   [4,2,2],
-                   [4,4,1],
-                   [5,1,2],
-                   [5,3,3],
-                   [5,5,1],
-                   [6,0,2],
-                   [6,2,5],
-                   [6,4,3],
-                   [7,1,5],
-                   [7,3,8],
-                   [7,5,3],
-                   [8,0,5],
-                   [8,2,13],
-                   [8,4,8],
-                   [9,1,13],
-                   [9,3,21],
-                   [9,5,8],
-                   ]
-        grid_fs = 60
-        grid_color = WHITE
-        for t,y,val in my_nums:
-            grid_nums[t][y] = MathTex(f"{val}",font_size=grid_fs,color=grid_color)
-        
-
-        #assume that max_t is odd
-        fgrid_fs = 0.8*grid_fs
-        grid_nums[max_t+1][0] = MathTex(r"F_{n -3}",font_size=fgrid_fs,color=grid_color,tex_to_color_map=t2cD)
-        grid_nums[max_t+1][2] = MathTex(r"F_{n -1}",font_size=fgrid_fs,color=grid_color,tex_to_color_map=t2cD)
-        grid_nums[max_t+1][4] = MathTex(r"F_{n -2}",font_size=fgrid_fs,color=grid_color,tex_to_color_map=t2cD)
-        grid_nums[max_t+2][1] = MathTex(r"F_{n -1}",font_size=fgrid_fs,color=grid_color,tex_to_color_map=t2cD)
-        grid_nums[max_t+2][3] = MathTex(r"F_{n }",font_size=fgrid_fs,color=grid_color,tex_to_color_map=t2cD)
-        grid_nums[max_t+2][5] = MathTex(r"F_{n -2}",font_size=fgrid_fs,color=grid_color,tex_to_color_map=t2cD)
-        
-        
-        
-        old_arrows = VGroup()
-        new_arrows = VGroup()
-
-        for t in range(1,max_t+3):
-            anim_group = []
-            old_arrows += new_arrows
-            new_arrows = VGroup()
-            if t == max_t + 1:
-
-                x_final = frame_width2
-                gridlines2 = VGroup(*[Line( [-frame_width2,frame_height2 - delta_y*(i+1),0],
-                                        [x_final,frame_height2 - delta_y*(i+1),0],
-                                        color=gridline_color, stroke_width=2) for i in range(6)])
-
-                #gridline_color = GREY
-                y_final = frame_height2 - delta_y*(5+1)
-                gridlines_x2 = VGroup(*[Line( [-frame_width2 + delta_x*(i+1), frame_height2 , 0],
-                                        [-frame_width2 + delta_x*(i+1), y_final , 0],
-                                        color=gridline_color, stroke_width=1) for i in range(9,11)])
-                            
-                self.play(Create(gridlines2),Create(gridlines_x2),FadeOut(N_ways),FadeOut(time_label))
-                self.play(LaggedStart(FadeIn(times[-2]),FadeIn(times[-1]) ,lag_ratio=0.1))
-                self.pause()
-                #anim_group.append(ReplacementTransform(times[t-1].copy(),grid_nums[max_t+1][0]))
-            for y in range(5+1):
-                if grid_nums[t][y]:
-                    grid_nums[t][y].set_x(delta_x*(t+0.5) - frame_width2)
-                    grid_nums[t][y].set_y(frame_height2 - delta_y*(5-y+0.5))
-                    if t==max_t+2:
-                        grid_nums[t][y].shift(last_x_shift*RIGHT) #amount to shift over the very last dude.
-        
-                    #self.add(grid_nums[t][y])
-                    if grid_nums[t][y]:
-                        ancestors = VGroup()
-                        if t ==1 :
-                            ancestors += spider
-                            new_arrows += mob_arrow(spider[0],grid_nums[t][y])
-                        if t >= 2:
-                            if y >= 2 and grid_nums[t-1][y-1]:
-                                ancestors += grid_nums[t-1][y-1]
-                                new_arrows += mob_arrow(grid_nums[t-1][y-1],grid_nums[t][y])
-                            if y < 4 and grid_nums[t-1][y+1]:
-                                ancestors += grid_nums[t-1][y+1]
-                                new_arrows += mob_arrow(grid_nums[t-1][y+1],grid_nums[t][y])
-                            
-                    #self.play(Create(grid_nums[t][y]))
-                        anim_group.append(ReplacementTransform(ancestors.copy(),grid_nums[t][y]))
-                        #self.play(FadeIn(new_arrows))
-
-                        #anim_group.append(FadeIn(new_arrows))
-
-            self.play(*anim_group, *[Write(a) for a in new_arrows]) #, FadeOut(old_arrows))
-            self.pause()
-
-        for i in [1,3,5]:
-            grid_nums[max_t+2][i].generate_target()
-        
-        grid_nums[max_t+2][1].target = MathTex(r"F_{n \!+\!1\!-\!2}",font_size=fgrid_fs,color=grid_color,tex_to_color_map=t2cD)
-        grid_nums[max_t+2][3].target = MathTex(r"F_{n \!+\!1\!-\!1}",font_size=fgrid_fs,color=grid_color,tex_to_color_map=t2cD)
-        grid_nums[max_t+2][5].target = MathTex(r"F_{n \!+\!1\!-\!3}",font_size=fgrid_fs,color=grid_color,tex_to_color_map=t2cD)
-        
-        anim_list = []
-        for i in [1,3,5]:
-            grid_nums[max_t+2][i].target.move_to(grid_nums[max_t+2][i])
-            grid_nums[max_t+2][i].target.align_to(grid_nums[max_t+2][i],LEFT)
-            anim_list.append(MoveToTarget(grid_nums[max_t+2][i]))
-            #anim_list.append(TransformMatchingTex(grid_nums[max_t+2][i],grid_nums[max_t+2][i].target))
-
-        self.play(*anim_list)
-        self.pause()
-
-        #self.next_section()
-
-        
-        claim_fs = 48
-        claim_statement = MathTex(r"\text{ Claim:}", r"\text{ Number of ways at time }", r"n ",r"\text{ are: }", font_size=claim_fs, tex_to_color_map=t2cD)
-        claim_fib = MathTex(r"F_{n -3}, F_{n -1}, F_{n -2}",font_size = fgrid_fs, tex_to_color_map=t2cD)
-        claim_proof = MathTex(r"\text{ Proof:}", r"\text{ By induction! }",font_size=claim_fs)
-        claim_text = VGroup(claim_statement,claim_fib,claim_proof).arrange(DOWN)
-        claim_proof.align_to(claim_statement,LEFT)
-        claim_text += Underline(claim_statement[0])
-        proof_u = Underline(claim_proof[0])
-        claim_text += proof_u
-        claim_box = background_box(width = claim_text.width, height = claim_text.height + 0.5, font_size = 24, box_opacity = 0.9)
-        claim_text.set_z_index(4)
-        claim_box.set_z_index(3)
-        claim = VGroup(claim_text,claim_box)
-        claim.to_corner(UL,buff=0.25)
-        claim_text.remove(claim_proof)
-        claim_text.remove(proof_u)
-        self.play(FadeIn(claim,shift=DOWN))
-        self.pause()
-
-        self.play(FadeIn(VGroup(claim_proof,proof_u),shift=DOWN))
-        self.pause()
-        
-        #corr_statement = MathTex(r"\text{ Corrolary:}", r"\text{ Number of ways at time }", r"n ",r"\text{ are: }", font_size=claim_fs, tex_to_color_map=t2cD)
-        #P_exact_hint = MathTex(r'\text{Exactly } n \text{ steps:}',
-        #               font_size=hint_size, tex_to_color_map=t2cD)
-        P_corr_exact = MathTex(r"\text{ Corollary: }", r'\mathbb{P}\big(T = n \big) = { F_{ n - 3}', r' \over 2^{ n -1 } }',
-                        font_size=claim_fs, tex_to_color_map=t2cD) #,
-        P_corr_exact.set_z_index(4)
-                        #tex_template=texPre) #, tex_to_color_map=t2cD)
-        #P_g_hint = MathTex(r'\text{Still out after } n \text{ steps:}',
-        #                font_size=hint_size, tex_to_color_map=t2cD)
-        #P_g = MathTex(r'\mathbb{P}\big(T > n \big) = { F_{ n }', r' \over 2^{ n -1 } }',
-        #                font_size=eq_size, tex_to_color_map=t2cD)
-
-        corr_box = background_box(width = claim_text.width, height = P_corr_exact.height + 0.2, font_size = 24, box_opacity = 0.9)
-        corr = VGroup(P_corr_exact,corr_box)
-
-        buff_y = 0.15
-        corr.next_to(claim,DOWN,buff=buff_y)
-        P_corr_exact[0].align_to(claim_proof[0],LEFT)
-        corr_u = Underline(P_corr_exact[0])
-        corr += corr_u
-
-        self.play(FadeIn(corr,shift=DOWN))
-        self.pause()
-
-        self.next_section()
-        
-        #corr_statement = MathTex(r"\text{ Corrolary:}", r"\text{ Number of ways at time }", r"n ",r"\text{ are: }", font_size=claim_fs, tex_to_color_map=t2cD)
-        #P_exact_hint = MathTex(r'\text{Exactly } n \text{ steps:}',
-        #               font_size=hint_size, tex_to_color_map=t2cD)
-        P_corr_g = MathTex(r"\text{ Corollary: }", r'\mathbb{P}\big(T > n \big) = { F_{ n - 1 } + F_{ n - 2 } ', r' \over 2^{ n -1 } }',
-                        font_size=claim_fs, tex_to_color_map=t2cD) #,
-
-        P_corr_g.set_z_index(4)
-                        #tex_template=texPre) #, tex_to_color_map=t2cD)
-        #P_g_hint = MathTex(r'\text{Still out after } n \text{ steps:}',
-        #                font_size=hint_size, tex_to_color_map=t2cD)
-        #P_g = MathTex(r'\mathbb{P}\big(T > n \big) = { F_{ n }', r' \over 2^{ n -1 } }',
-        #                font_size=eq_size, tex_to_color_map=t2cD)
-
-        corr_box2 = background_box(width = claim_text.width, height = P_corr_g.height + 0.2, font_size = 24, box_opacity = 0.9)
-        corr_box2.set_z_index(3)
-        corr2 = VGroup(P_corr_g,corr_box2)
-
-        corr2.next_to(corr,DOWN,buff=buff_y)
-        P_corr_g[0].align_to(claim_proof[0],LEFT)
-        corr_u2 = Underline(P_corr_g[0]).set_z_index(3)
-        corr2 += corr_u2
-
-
-
-
-        self.play(FadeIn(corr2,shift=DOWN))
-        self.pause()
-
-
-        P_corr_g_FINAL = MathTex(r"\text{ Corollary: }", r'\mathbb{P}\big(T > n \big) = { F_{ n }', r' \over 2^{ n -1 } }',
-                        font_size=claim_fs, tex_to_color_map=t2cD) #,
-
-        P_corr_g_FINAL.set_z_index(4)
-        P_corr_g_FINAL.move_to(P_corr_g)
-        P_corr_g_FINAL[0].align_to(P_corr_g[0],LEFT)
-
-        self.play(TransformMatchingTex(P_corr_g,P_corr_g_FINAL))
-        self.pause()
-
-        #self.remove(time_label)
-        #self.add(times[-2],times[-1]) #add the n and n+1
-        #self.pause()
+        self.play(Create(Square()))
+        self.next_slide()
+        self.play(Create(Square()))
+        self.next_slide()
+        self.play(Create(Square()))
         self.wait(2)
-
-
         
-                  
-        
-        
-  
-
 
